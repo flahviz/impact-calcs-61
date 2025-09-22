@@ -34,13 +34,15 @@ export function calculateDefectCosts(
   let economias: Defect['economias'];
 
   // Todos os defeitos são encontrados em produção
-  // O custo técnico já é o valor em produção
-  // Calcular quanto custaria nos outros ambientes (economias)
+  // O custo técnico já é o valor em produção (30x)
+  // Calcular quanto custaria nos outros ambientes baseado no desenvolvimento
+  const custoDesenvolvimento = custoTecnico / 30; // Custo base (1x)
+  
   custoPorFase = {
-    desenvolvimento: custoTecnico / 30, // 30x menos
-    teste: custoTecnico / 5,           // 5x menos  
-    homologacao: custoTecnico / 10,    // 10x menos
-    producao: custoTecnico             // Valor atual (produção)
+    desenvolvimento: custoDesenvolvimento,        // 1x
+    teste: custoDesenvolvimento * 5,             // 5x 
+    homologacao: custoDesenvolvimento * 10,      // 10x
+    producao: custoTecnico                       // 30x (valor atual)
   };
 
   // Custo com impacto baseado no custo técnico do ambiente encontrado
