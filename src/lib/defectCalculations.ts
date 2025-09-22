@@ -20,9 +20,8 @@ export function calculateDefectCosts(
     return total + (item.hours * item.custoHora);
   }, 0);
 
-  // Custo técnico é o custo base multiplicado pelo ambiente encontrado
-  const multFaseEncontrada = phaseMultipliers[ambienteEncontrado];
-  const custoTecnico = custoBase * multFaseEncontrada;
+  // O custo técnico é sempre o custo base SEM multiplicadores
+  const custoTecnico = custoBase;
   
   // Custo pago sempre é igual ao custo técnico
   const custoPago = custoTecnico;
@@ -34,8 +33,10 @@ export function calculateDefectCosts(
   let custoPorFase: Defect['custoPorFase'];
   let economias: Defect['economias'];
 
-  // Calcular custo por fase baseado no custo técnico real do ambiente encontrado
-  // Fazemos regra de três para calcular os outros custos proporcionalmente
+  // O custo por fase do ambiente encontrado é igual ao custo técnico
+  // Os outros são calculados proporcionalmente
+  const multFaseEncontrada = phaseMultipliers[ambienteEncontrado];
+  
   custoPorFase = {
     desenvolvimento: custoTecnico / multFaseEncontrada * phaseMultipliers.desenvolvimento,
     teste: custoTecnico / multFaseEncontrada * phaseMultipliers.teste,
