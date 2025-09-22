@@ -79,10 +79,10 @@ export default function Simulator() {
   // Calculate cost simulation
   const simulateDefect = () => {
     // Validation
-    if (!formData.titulo || !formData.percepcaoImpacto || !formData.ambienteEncontrado) {
+    if (!formData.titulo || !formData.percepcaoImpacto) {
       toast({
         title: "Campos obrigatórios",
-        description: "Por favor, preencha título, percepção de impacto e ambiente encontrado.",
+        description: "Por favor, preencha título e percepção de impacto.",
         variant: "destructive"
       });
       return;
@@ -102,7 +102,7 @@ export default function Simulator() {
       horasTotais: formData.horasTotais ? parseInt(formData.horasTotais) : undefined,
       severidade: formData.severidade as any || 'media',
       percepcaoImpacto: formData.percepcaoImpacto as any,
-      ambienteEncontrado: formData.ambienteEncontrado as any,
+      ambienteEncontrado: 'producao' as any, // Sempre produção
       modulo: formData.modulo,
       horasPorCargo
     };
@@ -254,20 +254,7 @@ export default function Simulator() {
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="ambienteEncontrado">Ambiente Encontrado *</Label>
-                <Select value={formData.ambienteEncontrado} onValueChange={(value) => setFormData(prev => ({ ...prev, ambienteEncontrado: value }))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o ambiente" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="desenvolvimento">Desenvolvimento (1x)</SelectItem>
-                    <SelectItem value="teste">Teste (5x)</SelectItem>
-                    <SelectItem value="homologacao">Homologação (10x)</SelectItem>
-                    <SelectItem value="producao">Produção (30x)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Ambiente fixo em produção - removido o campo do formulário */}
             </div>
           </Card>
 

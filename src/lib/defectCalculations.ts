@@ -10,7 +10,7 @@ export function calculateDefectCosts(
     horasTotais = 0, 
     severidade = 'media', 
     percepcaoImpacto = 'sem_impacto',
-    ambienteEncontrado = 'desenvolvimento',
+    ambienteEncontrado = 'producao',
     modulo = '',
     horasPorCargo = []
   } = defectData;
@@ -33,36 +33,28 @@ export function calculateDefectCosts(
   let custoPorFase: Defect['custoPorFase'];
   let economias: Defect['economias'];
 
-  // O custo por fase do ambiente encontrado é igual ao custo técnico
-  // Os outros são calculados proporcionalmente
-  const multFaseEncontrada = phaseMultipliers[ambienteEncontrado];
-  
+  // Todos os defeitos são encontrados em produção
+  // O custo técnico já é o valor em produção
+  // Calcular quanto custaria nos outros ambientes (economias)
   custoPorFase = {
-    desenvolvimento: custoTecnico / multFaseEncontrada * phaseMultipliers.desenvolvimento,
-    teste: custoTecnico / multFaseEncontrada * phaseMultipliers.teste,
-    homologacao: custoTecnico / multFaseEncontrada * phaseMultipliers.homologacao,
-    producao: custoTecnico / multFaseEncontrada * phaseMultipliers.producao
+    desenvolvimento: custoTecnico / 30, // 30x menos
+    teste: custoTecnico / 5,           // 5x menos  
+    homologacao: custoTecnico / 10,    // 10x menos
+    producao: custoTecnico             // Valor atual (produção)
   };
 
   // Custo com impacto baseado no custo técnico do ambiente encontrado
   custoComImpacto = percepcaoImpacto === 'sem_impacto' ? 0 : custoTecnico * multImpacto;
 
-  // Calcular economias baseadas no ambiente encontrado
-  economias = {};
-  if (ambienteEncontrado === 'teste') {
-    economias.desenvolvimento = custoTecnico - custoPorFase.desenvolvimento;
-  } else if (ambienteEncontrado === 'homologacao') {
-    economias.desenvolvimento = custoTecnico - custoPorFase.desenvolvimento;
-    economias.teste = custoTecnico - custoPorFase.teste;
-  } else if (ambienteEncontrado === 'producao') {
-    economias.desenvolvimento = custoTecnico - custoPorFase.desenvolvimento;
-    economias.teste = custoTecnico - custoPorFase.teste;
-    economias.homologacao = custoTecnico - custoPorFase.homologacao;
-  }
+  // Calcular economias - quanto custaria em cada ambiente vs. produção
+  economias = {
+    desenvolvimento: custoTecnico - custoPorFase.desenvolvimento, // Economia se fosse encontrado em dev
+    teste: custoTecnico - custoPorFase.teste,                   // Economia se fosse encontrado em teste  
+    homologacao: custoTecnico - custoPorFase.homologacao        // Economia se fosse encontrado em homolog
+  };
 
-  // Economia Potencial se identificado em desenvolvimento
-  const currentCost = custoPorFase[ambienteEncontrado];
-  const economiaPotencial = Math.max(0, currentCost - custoPorFase.desenvolvimento);
+  // Economia Potencial se fosse identificado em desenvolvimento
+  const economiaPotencial = custoTecnico - custoPorFase.desenvolvimento;
 
   return {
     titulo,
