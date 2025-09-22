@@ -20,9 +20,8 @@ export function calculateDefectCosts(
     return total + (item.hours * item.custoHora);
   }, 0);
 
-  // Calcular custo técnico baseado no ambiente encontrado
-  const multFaseEncontrada = phaseMultipliers[ambienteEncontrado];
-  const custoTecnico = custoBase * multFaseEncontrada;
+  // Custo técnico é o custo base real do defeito (sem multiplicador)
+  const custoTecnico = custoBase;
   
   // Custo pago sempre é igual ao custo técnico
   const custoPago = custoTecnico;
